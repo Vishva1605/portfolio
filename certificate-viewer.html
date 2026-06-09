@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Certificate Viewer · Vishva K S</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:     #050508;
+      --bg2:    #0a0a12;
+      --neon:   #00ff88;
+      --cyan:   #00c8ff;
+      --pink:   #ff3366;
+      --amber:  #ffaa00;
+      --white:  #ffffff;
+      --soft:   rgba(255,255,255,0.65);
+      --muted:  rgba(255,255,255,0.35);
+      --border: rgba(0,255,136,0.18);
+      --neon-glow: 0 0 20px rgba(0,255,136,0.55), 0 0 60px rgba(0,255,136,0.18);
+      --bar-h:  58px;
+      --side-w: 252px;
+    }
+
+    *,*::before,*::after { box-sizing:border-box; margin:0; padding:0 }
+    html,body { height:100%; overflow:hidden }
+    body {
+      background:var(--bg); color:var(--white);
+      font-family:'Inter',system-ui,sans-serif;
+      -webkit-font-smoothing:antialiased;
+      display:flex; flex-direction:column;
+    }
+    a { color:inherit; text-decoration:none }
+    button { border:0; background:none; font:inherit; cursor:pointer; color:inherit }
+    img { display:block }
+
+    ::-webkit-scrollbar { width:4px; height:4px }
+    ::-webkit-scrollbar-track { background:var(--bg) }
+    ::-webkit-scrollbar-thumb { background:rgba(0,255,136,0.4); border-radius:99px }
+
+    /* ── Scanlines overlay ─────────────────────── */
+    .scanlines {
+      position:fixed; inset:0; pointer-events:none; z-index:9998;
+      background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);
+    }
+
+    /* ── Spotlight follows cursor ──────────────── */
+    #spotlight {
+      position:fixed; inset:0; pointer-events:none; z-index:0;
+    }
+
+    /* ════════════════════════════════════════════
+       TOP BAR
+    ════════════════════════════════════════════ */
+    .topbar {
+      position:relative; z-index:200;
+      height:var(--bar-h);
+      display:flex; align-items:center; gap:10px;
+      flex-shrink:0;
+      padding:0 16px;
+      border-bottom:1px solid var(--border);
+      background:rgba(5,5,8,0.97);
+      backdrop-filter:blur(24px);
+    }
+
+    .back-btn {
+      display:inline-flex; align-items:center; gap:7px;
+      border:1px solid var(--border); border-radius:4px;
+      padding:0 16px; height:36px;
+      font-family:'Space Mono',monospace;
+      font-size:0.7rem; font-weight:700; letter-spacing:1.5px;
+      color:var(--neon); background:rgba(0,255,136,0.06);
+      transition:background 140ms, box-shadow 140ms;
+      flex-shrink:0; white-space:nowrap;
+    }
+    .back-btn:hover { background:rgba(0,255,136,0.14); box-shadow:var(--neon-glow) }
+
+    .bar-title { flex:1; min-width:0 }
+    .bar-title small {
+      display:block; font-family:'Space Mono',monospace;
+      font-size:0.58rem; letter-spacing:2.5px; color:var(--neon); margin-bottom:1px;
+    }
+    .bar-title h1 {
+      font-family:'Bebas Neue',cursive; font-size:1.15rem; letter-spacing:2px;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+
+    .bar-actions { display:flex; align-items:center; gap:5px; flex-shrink:0 }
+
+    /* toolbar buttons */
+    .tb {
+      display:inline-flex; align-items:center; justify-content:center; gap:6px;
+      height:36px; padding:0 12px;
+      border:1px solid rgba(255,255,255,0.09); border-radius:4px;
+      font-family:'Space Mono',monospace;
+      font-size:0.67rem; font-weight:700; letter-spacing:1px;
+      color:var(--muted); background:rgba(255,255,255,0.04);
+      transition:background 130ms, border-color 130ms, color 130ms;
+      white-space:nowrap; cursor:pointer;
+    }
+    .tb:hover:not(:disabled) { background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.2); color:var(--white) }
+    .tb:disabled { opacity:0.28; cursor:not-allowed }
+    .tb.tb-neon { border-color:var(--neon); color:var(--neon); background:rgba(0,255,136,0.07) }
+    .tb.tb-neon:hover { background:var(--neon); color:var(--bg); box-shadow:var(--neon-glow) }
+    .tb.tb-active { border-color:var(--cyan); color:var(--cyan); background:rgba(0,200,255,0.1) }
+
+    .zoom-display {
+      font-family:'Space Mono',monospace; font-size:0.7rem; font-weight:700;
+      color:var(--neon); min-width:44px; text-align:center;
+    }
+    .bar-sep { width:1px; height:22px; background:rgba(255,255,255,0.1); margin:0 3px }
+
+    /* hide zoom group for PDFs */
+    .zoom-group.hidden { display:none }
+    .zoom-group { display:contents }
+
+    /* ════════════════════════════════════════════
+       MAIN LAYOUT
+    ════════════════════════════════════════════ */
+    .app-body {
+      position:relative; z-index:1;
+      display:grid;
+      grid-template-columns:var(--side-w) 1fr;
+      flex:1; overflow:hidden;
+      height:calc(100vh - var(--bar-h));
+    }
+
+    /* ── Sidebar ───────────────────────────────── */
+    .sidebar {
+      display:flex; flex-direction:column;
+      border-right:1px solid var(--border);
+      background:rgba(5,5,8,0.9);
+      backdrop-filter:blur(20px);
+      overflow:hidden;
+    }
+    .sb-head {
+      padding:14px 14px 10px;
+      border-bottom:1px solid var(--border);
+      flex-shrink:0;
+    }
+    .sb-head small {
+      font-family:'Space Mono',monospace;
+      font-size:0.58rem; letter-spacing:2px; color:var(--neon); display:block; margin-bottom:3px;
+    }
+    .sb-head strong {
+      font-family:'Bebas Neue',cursive; font-size:1rem; letter-spacing:2px;
+    }
+    .sb-count {
+      font-family:'Space Mono',monospace;
+      font-size:0.6rem; color:var(--muted); margin-top:2px; display:block;
+    }
+    .cert-list { flex:1; overflow-y:auto; padding:6px }
+
+    .cli {
+      display:flex; align-items:center; gap:10px;
+      border:1px solid transparent; border-radius:5px;
+      padding:10px 11px; cursor:pointer; margin-bottom:3px;
+      transition:background 130ms, border-color 130ms;
+      position:relative;
+    }
+    .cli::before {
+      content:'';
+      position:absolute; left:0; top:50%; transform:translateY(-50%);
+      width:3px; height:0; border-radius:0 2px 2px 0;
+      background:var(--neon);
+      transition:height 200ms;
+    }
+    .cli:hover { background:rgba(255,255,255,0.04); border-color:rgba(255,255,255,0.07) }
+    .cli:hover::before { height:60% }
+    .cli.active { background:rgba(0,255,136,0.08); border-color:rgba(0,255,136,0.28) }
+    .cli.active::before { height:80%; box-shadow:0 0 8px var(--neon) }
+
+    .cli-num {
+      font-family:'Bebas Neue',cursive;
+      font-size:1.3rem; letter-spacing:1px;
+      color:rgba(255,255,255,0.12); line-height:1; flex-shrink:0;
+      transition:color 130ms;
+    }
+    .cli.active .cli-num { color:var(--neon) }
+    .cli-info { flex:1; min-width:0; display:flex; flex-direction:column; gap:2px }
+    .cli-issuer {
+      font-family:'Space Mono',monospace;
+      font-size:0.57rem; letter-spacing:1.5px; color:var(--neon); text-transform:uppercase;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .cli-name {
+      font-size:0.82rem; font-weight:600; color:var(--soft);
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+      transition:color 130ms;
+    }
+    .cli.active .cli-name { color:var(--white) }
+    .cli-badge {
+      font-family:'Space Mono',monospace;
+      font-size:0.58rem; color:var(--muted);
+    }
+
+    /* ── Viewer ────────────────────────────────── */
+    .viewer {
+      display:flex; flex-direction:column;
+      overflow:hidden; position:relative;
+    }
+
+    /* content stage — takes all height except bottom bar */
+    .stage {
+      flex:1; overflow:auto;
+      display:flex; align-items:center; justify-content:center;
+      padding:24px;
+      position:relative;
+      background:var(--bg2);
+    }
+
+    /* image container (CSS zoom via transform) */
+    .img-outer {
+      position:relative;
+      display:flex; align-items:center; justify-content:center;
+      width:100%; height:100%;
+    }
+    .img-inner {
+      position:relative;
+      transform-origin:center center;
+      transition:transform 220ms cubic-bezier(.4,0,.2,1);
+      cursor:grab; user-select:none;
+    }
+    .img-inner:active { cursor:grabbing }
+    .img-inner img {
+      display:block;
+      /* Fit to available stage by default — overridden by JS for zoom */
+      max-width:100%; max-height:calc(100vh - var(--bar-h) - 56px - 48px);
+      width:auto; height:auto;
+      border-radius:8px;
+      border:1px solid rgba(0,255,136,0.2);
+      box-shadow:0 0 60px rgba(0,0,0,0.8), 0 0 40px rgba(0,255,136,0.06);
+      -webkit-user-drag:none;
+    }
+    .img-badge {
+      position:absolute; top:10px; left:10px;
+      font-family:'Space Mono',monospace;
+      font-size:0.62rem; font-weight:700; letter-spacing:1.5px;
+      border:1px solid rgba(0,255,136,0.35); border-radius:3px;
+      padding:4px 10px; color:var(--neon);
+      background:rgba(5,5,8,0.88); backdrop-filter:blur(10px);
+    }
+
+    /* PDF container */
+    .pdf-wrap {
+      width:100%; height:100%;
+      display:flex; flex-direction:column;
+    }
+    .pdf-wrap iframe {
+      width:100%; flex:1;
+      border:0; border-radius:8px;
+      background:white;
+    }
+    .pdf-tip {
+      flex-shrink:0;
+      font-family:'Space Mono',monospace;
+      font-size:0.62rem; letter-spacing:1px; color:var(--muted);
+      text-align:center; padding:8px 0 0;
+    }
+
+    /* empty state */
+    .empty-state {
+      display:flex; flex-direction:column; align-items:center; gap:14px;
+      border:1px solid var(--border); border-radius:10px;
+      padding:56px 40px; text-align:center; max-width:360px;
+      background:rgba(10,10,18,0.8); backdrop-filter:blur(12px);
+    }
+    .empty-state .e-icon { font-size:2.8rem; line-height:1 }
+    .empty-state h3 { font-family:'Bebas Neue',cursive; font-size:1.3rem; letter-spacing:2px; color:var(--neon) }
+    .empty-state p { color:var(--muted); font-size:0.88rem }
+
+    /* ── Enter animation ───────────────────────── */
+    @keyframes certIn {
+      from { opacity:0; transform:scale(0.94) translateY(14px) }
+      to   { opacity:1; transform:scale(1) translateY(0) }
+    }
+    @keyframes certOut {
+      to { opacity:0; transform:scale(0.96) translateY(-10px) }
+    }
+    .cert-enter { animation:certIn 360ms cubic-bezier(.4,0,.2,1) forwards }
+    .cert-exit  { animation:certOut 180ms ease forwards }
+
+    /* ── Bottom bar ────────────────────────────── */
+    .bot-bar {
+      flex-shrink:0; height:46px;
+      display:flex; align-items:center; justify-content:space-between;
+      padding:0 16px; gap:12px;
+      border-top:1px solid var(--border);
+      background:rgba(5,5,8,0.96);
+    }
+    .bot-counter {
+      font-family:'Space Mono',monospace;
+      font-size:0.68rem; letter-spacing:1.5px; color:var(--muted);
+    }
+    .bot-counter em { color:var(--neon); font-style:normal }
+    .kbd-row {
+      display:flex; align-items:center; gap:6px;
+      font-family:'Space Mono',monospace;
+      font-size:0.58rem; letter-spacing:0.5px; color:var(--muted);
+    }
+    .k {
+      border:1px solid rgba(255,255,255,0.15); border-radius:3px;
+      padding:2px 5px; font-size:0.58rem; color:rgba(255,255,255,0.5);
+      background:rgba(255,255,255,0.05);
+    }
+
+    /* ── Responsive ────────────────────────────── */
+    @media(max-width:768px) {
+      html,body { overflow:auto; height:auto }
+      .app-body { grid-template-columns:1fr; height:auto }
+      .sidebar { display:none }
+      .stage { padding:12px; min-height:60vh }
+      .img-inner img { max-height:70vh }
+      .bar-title h1 { font-size:0.9rem }
+      .tb span { display:none }
+      .tb { padding:0; width:36px; border-radius:50% }
+    }
+  </style>
+</head>
+<body>
+  <div id="spotlight"></div>
+  <div class="scanlines"></div>
+
+  <!-- ══ TOP BAR ════════════════════════════════════ -->
+  <div class="topbar">
+    <a class="back-btn" href="index.html#certificates">← BACK</a>
+
+    <div class="bar-title">
+      <small>CERTIFICATE VIEWER</small>
+      <h1 id="certTitle">—</h1>
+    </div>
+
+    <div class="bar-actions">
+      <!-- Zoom group (images only) -->
+      <div class="zoom-group hidden" id="zoomGroup">
+        <button class="tb" id="zoomOut" title="Zoom Out (-)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="8" y1="11" x2="14" y2="11"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <span>OUT</span>
+        </button>
+        <span class="zoom-display" id="zoomDisplay">FIT</span>
+        <button class="tb" id="zoomIn" title="Zoom In (+)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <span>IN</span>
+        </button>
+        <button class="tb" id="zoomFit" title="Fit to Screen (F)"><span>FIT</span></button>
+        <button class="tb" id="zoomActual" title="Actual Size (1)"><span>100%</span></button>
+        <div class="bar-sep"></div>
+      </div>
+
+      <a class="tb" id="openLink" href="#" target="_blank" rel="noreferrer" title="Open in new tab">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        <span>OPEN</span>
+      </a>
+      <a class="tb tb-neon" id="dlLink" href="#" download title="Download">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>DOWNLOAD</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- ══ BODY ═══════════════════════════════════════ -->
+  <div class="app-body">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sb-head">
+        <small>CREDENTIALS</small>
+        <strong>VISHVA K S</strong>
+        <span class="sb-count" id="sbCount">— certificates</span>
+      </div>
+      <ul class="cert-list" id="certList"></ul>
+    </aside>
+
+    <!-- Viewer -->
+    <div class="viewer">
+
+      <!-- Stage -->
+      <div class="stage" id="stage">
+        <div class="empty-state">
+          <div class="e-icon">⚡</div>
+          <h3>LOADING…</h3>
+          <p>Certificate is being loaded.</p>
+        </div>
+      </div>
+
+      <!-- Bottom nav bar -->
+      <div class="bot-bar">
+        <button class="tb" id="prevBtn" disabled>← PREV</button>
+        <div style="display:flex;align-items:center;gap:16px">
+          <span class="bot-counter" id="botCounter"></span>
+          <div class="kbd-row">
+            <span class="k">←</span><span class="k">→</span> nav &nbsp;
+            <span class="k">+</span><span class="k">−</span> zoom &nbsp;
+            <span class="k">F</span> fit &nbsp;
+            <span class="k">Esc</span> back
+          </div>
+        </div>
+        <button class="tb" id="nextBtn" disabled>NEXT →</button>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+  /* ════════════════════════════════════════
+     CERT DATA
+  ════════════════════════════════════════ */
+  const CERTS = [
+    { id:'nptel-java',  issuer:'NPTEL',               title:'Programming in Java',         file:'certification/Programming In Java.pdf',                                   type:'pdf'   },
+    { id:'nptel-cloud', issuer:'NPTEL',               title:'Cloud Computing',             file:'certification/Cloud Computing.pdf',                                      type:'pdf'   },
+    { id:'pearson',     issuer:'Pearson',             title:'MePro Level 10 Expert',       file:'certification/Pearson MePro Level 10 Expert Certificate.png',            type:'image' },
+    { id:'gfg',         issuer:'GeeksforGeeks',       title:'Java Online Course',          file:'certification/GeeksforGeeks Java Course Certificate.png',                type:'image' },
+    { id:'ulektz',      issuer:'uLektz Learning',     title:'Java Full Stack Internship',  file:'certification/uLektz Java Full Stack Internship Certificate.png',         type:'image' },
+    { id:'techno',      issuer:'TechnoHacks EduTech', title:'Web Development Internship',  file:'certification/TechnoHacks Web Development Internship Certificate.pdf',   type:'pdf'   },
+  ];
+
+  /* ════════════════════════════════════════
+     STATE
+  ════════════════════════════════════════ */
+  let cur   = 0;
+  let scale = 1;   // for CSS transform zoom
+  const ZOOM_STEP = 0.25, ZOOM_MAX = 4, ZOOM_MIN = 0.25;
+
+  /* ════════════════════════════════════════
+     SPOTLIGHT (cursor glow)
+  ════════════════════════════════════════ */
+  const spotEl = document.getElementById('spotlight');
+  document.addEventListener('mousemove', e => {
+    spotEl.style.background =
+      `radial-gradient(650px circle at ${e.clientX}px ${e.clientY}px,` +
+      `rgba(0,255,136,0.05) 0%, transparent 65%)`;
+  });
+
+  /* ════════════════════════════════════════
+     DOM REFS
+  ════════════════════════════════════════ */
+  const titleEl   = document.getElementById('certTitle');
+  const stageEl   = document.getElementById('stage');
+  const listEl    = document.getElementById('certList');
+  const sbCount   = document.getElementById('sbCount');
+  const prevBtn   = document.getElementById('prevBtn');
+  const nextBtn   = document.getElementById('nextBtn');
+  const botCnt    = document.getElementById('botCounter');
+  const openLink  = document.getElementById('openLink');
+  const dlLink    = document.getElementById('dlLink');
+  const zoomGroup = document.getElementById('zoomGroup');
+  const zoomDisp  = document.getElementById('zoomDisplay');
+  const zoomInBtn = document.getElementById('zoomIn');
+  const zoomOutBtn= document.getElementById('zoomOut');
+  const zoomFitBtn= document.getElementById('zoomFit');
+  const zoomActBtn= document.getElementById('zoomActual');
+
+  /* ════════════════════════════════════════
+     DETECT INITIAL FROM URL
+  ════════════════════════════════════════ */
+  const params   = new URLSearchParams(location.search);
+  const urlFile  = decodeURIComponent(params.get('file') || '');
+  const urlTitle = decodeURIComponent(params.get('title') || '');
+  const urlType  = params.get('type') || 'pdf';
+
+  // Try to find matching cert
+  let initIdx = CERTS.findIndex(c => urlFile && c.file === urlFile);
+  if (initIdx < 0 && urlFile) {
+    CERTS.unshift({
+      id:'url-cert', issuer:'Certificate',
+      title: urlTitle || 'Certificate',
+      file: urlFile, type: urlType
+    });
+    initIdx = 0;
+  }
+  cur = Math.max(0, initIdx);
+
+  /* ════════════════════════════════════════
+     BUILD SIDEBAR
+  ════════════════════════════════════════ */
+  function buildSidebar() {
+    listEl.innerHTML = '';
+    sbCount.textContent = `${CERTS.length} certificate${CERTS.length !== 1 ? 's' : ''}`;
+    CERTS.forEach((c, i) => {
+      const li = document.createElement('li');
+      li.className = 'cli' + (i === cur ? ' active' : '');
+      li.innerHTML = `
+        <span class="cli-num">${String(i + 1).padStart(2, '0')}</span>
+        <div class="cli-info">
+          <span class="cli-issuer">${c.issuer}</span>
+          <span class="cli-name">${c.title}</span>
+          <span class="cli-badge">${c.type === 'pdf' ? '📄 PDF' : '🖼 IMAGE'}</span>
+        </div>`;
+      li.addEventListener('click', () => go(i));
+      listEl.appendChild(li);
+    });
+  }
+
+  /* ════════════════════════════════════════
+     NAVIGATE TO CERT
+  ════════════════════════════════════════ */
+  function go(idx) {
+    if (idx < 0 || idx >= CERTS.length) return;
+
+    // Animate out
+    const existing = stageEl.querySelector('.img-outer, .pdf-wrap');
+    if (existing) {
+      existing.classList.add('cert-exit');
+      setTimeout(() => render(idx), 185);
+    } else {
+      render(idx);
+    }
+  }
+
+  function render(idx) {
+    cur   = idx;
+    scale = 1;
+    const cert = CERTS[cur];
+
+    // Update meta
+    document.title = `${cert.title} · Vishva K S`;
+    titleEl.textContent = cert.title;
+    openLink.href = cert.file;
+    dlLink.href   = cert.file;
+    dlLink.setAttribute('download', cert.title);
+
+    // Nav state
+    prevBtn.disabled = cur === 0;
+    nextBtn.disabled = cur === CERTS.length - 1;
+    botCnt.innerHTML = `<em>${cur + 1}</em> / ${CERTS.length}`;
+
+    // Sidebar highlight + scroll into view
+    document.querySelectorAll('.cli').forEach((el, i) =>
+      el.classList.toggle('active', i === cur)
+    );
+    document.querySelectorAll('.cli')[cur]?.scrollIntoView({ block:'nearest', behavior:'smooth' });
+
+    // Render content
+    stageEl.innerHTML = '';
+
+    if (cert.type === 'image') {
+      zoomGroup.classList.remove('hidden');
+      renderImage(cert);
+    } else {
+      zoomGroup.classList.add('hidden');
+      renderPDF(cert);
+    }
+  }
+
+  /* ════════════════════════════════════════
+     IMAGE RENDER
+  ════════════════════════════════════════ */
+  function renderImage(cert) {
+    const outer = document.createElement('div');
+    outer.className = 'img-outer cert-enter';
+
+    const inner = document.createElement('div');
+    inner.className = 'img-inner';
+    inner.id = 'imgInner';
+
+    const img = document.createElement('img');
+    img.alt = cert.title;
+    img.src = cert.file;
+    img.draggable = false;
+
+    const badge = document.createElement('div');
+    badge.className = 'img-badge';
+    badge.textContent = cert.issuer.toUpperCase();
+
+    inner.appendChild(img);
+    inner.appendChild(badge);
+    outer.appendChild(inner);
+    stageEl.appendChild(outer);
+
+    // On load, reset scale display
+    img.onload = () => {
+      scale = 1;
+      updateZoomDisplay();
+    };
+
+    // Wheel zoom (Ctrl or plain scroll)
+    stageEl.addEventListener('wheel', handleWheel, { passive:false });
+
+    // Drag to pan
+    setupDrag(inner, outer);
+
+    updateZoomDisplay();
+  }
+
+  /* ════════════════════════════════════════
+     PDF RENDER
+  ════════════════════════════════════════ */
+  function renderPDF(cert) {
+    const wrap = document.createElement('div');
+    wrap.className = 'pdf-wrap cert-enter';
+
+    const iframe = document.createElement('iframe');
+    iframe.src   = cert.file;
+    iframe.title = cert.title;
+    iframe.setAttribute('allowfullscreen', '');
+
+    const tip = document.createElement('p');
+    tip.className = 'pdf-tip';
+    tip.textContent = 'Use browser controls to zoom the PDF · Ctrl+Scroll to zoom';
+
+    wrap.appendChild(iframe);
+    wrap.appendChild(tip);
+    stageEl.appendChild(wrap);
+  }
+
+  /* ════════════════════════════════════════
+     ZOOM
+  ════════════════════════════════════════ */
+  function getInner() { return document.getElementById('imgInner') }
+
+  function applyScale() {
+    const inner = getInner();
+    if (!inner) return;
+    inner.style.transform = `scale(${scale})`;
+    updateZoomDisplay();
+    zoomInBtn.disabled  = scale >= ZOOM_MAX;
+    zoomOutBtn.disabled = scale <= ZOOM_MIN;
+  }
+
+  function updateZoomDisplay() {
+    zoomDisp.textContent = Math.round(scale * 100) + '%';
+  }
+
+  function handleWheel(e) {
+    e.preventDefault();
+    const delta = e.deltaY < 0 ? ZOOM_STEP : -ZOOM_STEP;
+    scale = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, scale + delta));
+    applyScale();
+  }
+
+  zoomInBtn.addEventListener('click',  () => { scale = Math.min(ZOOM_MAX, scale + ZOOM_STEP); applyScale() });
+  zoomOutBtn.addEventListener('click', () => { scale = Math.max(ZOOM_MIN, scale - ZOOM_STEP); applyScale() });
+  zoomFitBtn.addEventListener('click', () => { scale = 1; applyScale() });
+  zoomActBtn.addEventListener('click', () => { scale = 1; applyScale() });
+
+  /* ════════════════════════════════════════
+     DRAG TO PAN (when zoomed > 1)
+  ════════════════════════════════════════ */
+  function setupDrag(inner, container) {
+    let dragging = false, sx = 0, sy = 0, ox = 0, oy = 0;
+    let tx = 0, ty = 0;
+
+    container.addEventListener('mousedown', e => {
+      if (scale <= 1) return;
+      dragging = true; sx = e.clientX - tx; sy = e.clientY - ty;
+    });
+    document.addEventListener('mousemove', e => {
+      if (!dragging) return;
+      tx = e.clientX - sx; ty = e.clientY - sy;
+      inner.style.transform = `scale(${scale}) translate(${tx / scale}px,${ty / scale}px)`;
+    });
+    document.addEventListener('mouseup', () => { dragging = false });
+  }
+
+  /* ════════════════════════════════════════
+     NAV
+  ════════════════════════════════════════ */
+  prevBtn.addEventListener('click', () => go(cur - 1));
+  nextBtn.addEventListener('click', () => go(cur + 1));
+
+  /* ════════════════════════════════════════
+     KEYBOARD
+  ════════════════════════════════════════ */
+  document.addEventListener('keydown', e => {
+    // Don't trigger inside iframe
+    if (document.activeElement?.tagName === 'IFRAME') return;
+    switch(e.key) {
+      case 'ArrowLeft':  go(cur - 1); break;
+      case 'ArrowRight': go(cur + 1); break;
+      case '+':
+      case '=': scale = Math.min(ZOOM_MAX, scale + ZOOM_STEP); applyScale(); break;
+      case '-': scale = Math.max(ZOOM_MIN, scale - ZOOM_STEP); applyScale(); break;
+      case 'f':
+      case 'F': scale = 1; applyScale(); break;
+      case '1': scale = 1; applyScale(); break;
+      case '2': scale = 2; applyScale(); break;
+      case 'Escape': location.href = 'index.html#certificates'; break;
+    }
+  });
+
+  /* ════════════════════════════════════════
+     INIT
+  ════════════════════════════════════════ */
+  buildSidebar();
+  render(cur);
+  </script>
+</body>
+</html>

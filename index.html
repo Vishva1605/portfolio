@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Vishva K S — Java Developer. BE CSE Graduate 2026. Smart Attendance System, Spring Boot, Android, Firebase, OpenCV.">
+  <meta name="theme-color" content="#050508">
+  <title>VISHVA K S · JAVA DEVELOPER</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <!-- Custom cursor -->
+  <div class="cur-ring" id="curRing" aria-hidden="true"></div>
+  <div class="cur-dot"  id="curDot"  aria-hidden="true"></div>
+  <!-- Scanlines -->
+  <div class="scanlines" aria-hidden="true"></div>
+
+  <!-- ══ NAV ══════════════════════════════════════ -->
+  <header class="nav" data-header>
+    <a class="nav-logo" href="#home" aria-label="Home">
+      <span class="logo-bracket">[</span>VK<span class="logo-bracket">]</span>
+    </a>
+    <nav class="nav-links" data-nav-links aria-label="Main navigation">
+      <a href="#about">ABOUT</a>
+      <a href="#skills">SKILLS</a>
+      <a href="#projects">PROJECTS</a>
+      <a href="#experience">JOURNEY</a>
+      <a href="#certificates">CERTS</a>
+      <a href="#contact">CONTACT</a>
+    </nav>
+    <a class="nav-hire" href="https://mail.google.com/mail/?view=cm&fs=1&to=vishvasrinivas123@gmail.com" target="_blank" rel="noreferrer" id="nav-hire">HIRE ME</a>
+    <button class="burger" type="button" data-menu-button aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <main>
+    <!-- ══ HERO ══════════════════════════════════════ -->
+    <section class="hero" id="home">
+      <div class="hero-grid-bg" aria-hidden="true"></div>
+      <div class="hero-vignette" aria-hidden="true"></div>
+
+      <div class="hero-inner">
+        <!-- Text -->
+        <div class="hero-text">
+          <p class="hero-tag">
+            <span class="tag-slash">// </span>BE CSE · S.A. ENGINEERING COLLEGE · 2026
+          </p>
+          <div class="hero-name">
+            <h1 class="glitch" data-text="VISHVA">VISHVA</h1>
+            <h1 class="name-ks">K <em>S</em></h1>
+          </div>
+          <div class="hero-role-line">
+            <span class="prompt">&gt;_&nbsp;</span>
+            <span id="typedText" class="typed-text"></span>
+            <span class="blink-cur" aria-hidden="true">█</span>
+          </div>
+          <p class="hero-desc">
+            Building real-world software with Java, Spring Boot, Android &amp; Firebase.
+            CGPA 8.2 · IEEE Hackathon 2nd Prize · 2× Internships.
+          </p>
+          <div class="hero-ctas">
+            <a class="btn-neon" href="#projects" id="hero-work-btn">
+              <span class="btn-neon-bg"></span>
+              <span>EXPLORE WORK</span>
+            </a>
+            <a class="btn-ghost" href="Vishva_Resume.pdf" download id="hero-cv-btn">GET RESUME ↓</a>
+            <a class="btn-txt" href="https://mail.google.com/mail/?view=cm&fs=1&to=vishvasrinivas123@gmail.com" target="_blank" rel="noreferrer" id="hero-hire-btn">HIRE ME →</a>
+          </div>
+          <div class="hero-pills">
+            <span>JAVA</span><span>SPRING BOOT</span><span>SQL</span>
+            <span>ANDROID</span><span>FIREBASE</span><span>REST API</span>
+          </div>
+        </div>
+
+        <!-- Photo — ONLY ONE IN ENTIRE SITE -->
+        <div class="hero-visual">
+          <div class="photo-wrap" id="photoWrap">
+            <div class="spin-border" aria-hidden="true"></div>
+            <div class="spin-glow"   aria-hidden="true"></div>
+            <img
+              src="Vishva_Standing_Photo.jpg"
+              alt="Vishva K S — Java Developer"
+              class="hero-photo"
+              id="heroPhoto"
+            >
+            <div class="corner-tl" aria-hidden="true"></div>
+            <div class="corner-tr" aria-hidden="true"></div>
+            <div class="corner-bl" aria-hidden="true"></div>
+            <div class="corner-br" aria-hidden="true"></div>
+          </div>
+          <div class="float-badge fb-top">
+            <span class="fb-pulse"></span> OPEN TO WORK
+          </div>
+          <div class="float-badge fb-bot">
+            <strong>8.2</strong><span>CGPA</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="scroll-hint" aria-label="Scroll down">
+        <div class="sh-line"></div>
+        <span>SCROLL</span>
+      </div>
+    </section>
+
+    <!-- ══ MARQUEE ════════════════════════════════════ -->
+    <div class="marquee-strip" aria-label="Tech stack">
+      <div class="marquee-inner">
+        <span>JAVA</span><span>·</span><span>SQL</span><span>·</span><span>DSA</span><span>·</span>
+        <span>MYSQL</span><span>·</span><span>ORACLE</span><span>·</span><span>SPRING BOOT</span><span>·</span>
+        <span>REST API</span><span>·</span><span>ANDROID</span><span>·</span><span>FIREBASE</span><span>·</span>
+        <span>OPENCV</span><span>·</span><span>PYTHON</span><span>·</span><span>HTML</span><span>·</span>
+        <span>CSS</span><span>·</span><span>JAVASCRIPT</span><span>·</span><span>MOBILEFACENET</span><span>·</span>
+        <span>JAVA</span><span>·</span><span>SQL</span><span>·</span><span>DSA</span><span>·</span>
+        <span>MYSQL</span><span>·</span><span>ORACLE</span><span>·</span><span>SPRING BOOT</span><span>·</span>
+        <span>REST API</span><span>·</span><span>ANDROID</span><span>·</span><span>FIREBASE</span><span>·</span>
+        <span>OPENCV</span><span>·</span><span>PYTHON</span><span>·</span><span>HTML</span><span>·</span>
+        <span>CSS</span><span>·</span><span>JAVASCRIPT</span><span>·</span><span>MOBILEFACENET</span><span>·</span>
+      </div>
+    </div>
+
+    <!-- ══ ABOUT ══════════════════════════════════════ -->
+    <section class="sec" id="about">
+      <div class="sec-inner">
+        <div class="sec-head" data-reveal="left">
+          <span class="sec-num">01</span>
+          <h2 class="sec-title">ABOUT</h2>
+        </div>
+        <div class="about-grid">
+          <div class="about-text" data-reveal="bottom">
+            <p>I'm a Java-focused developer from S.A. Engineering College, Chennai. My work spans Android apps,
+               backend systems with Spring Boot, face recognition with OpenCV &amp; MobileFaceNet, and web projects.</p>
+            <p>My main project — Smart Attendance System — uses face recognition, Firebase, and Android
+               for production-grade attendance management. I've completed two internships and won 2nd place
+               at an IEEE college-level hackathon.</p>
+            <div class="about-ctas">
+              <a class="btn-neon sm" href="Vishva_Resume.pdf" download>
+                <span class="btn-neon-bg"></span><span>DOWNLOAD RESUME</span>
+              </a>
+              <a class="btn-ghost sm" href="https://github.com/Vishva1605" target="_blank" rel="noreferrer">GITHUB ↗</a>
+            </div>
+          </div>
+          <div class="about-stats" data-reveal="right">
+            <div class="s-box"><strong class="counter" data-target="82" data-decimal>8.2</strong><span>CGPA</span></div>
+            <div class="s-box"><strong class="counter" data-target="5">5</strong><span>PROJECTS</span></div>
+            <div class="s-box"><strong class="counter" data-target="2">2</strong><span>INTERNSHIPS</span></div>
+            <div class="s-box"><strong class="counter" data-target="2026">2026</strong><span>GRADUATE</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ SKILLS ═════════════════════════════════════ -->
+    <section class="sec" id="skills">
+      <div class="sec-inner">
+        <div class="sec-head" data-reveal="left">
+          <span class="sec-num">02</span>
+          <h2 class="sec-title">SKILLS</h2>
+        </div>
+        <div class="skills-wrap">
+          <div class="skill-bars" data-reveal="bottom">
+            <div class="sk"><div class="sk-head"><span>JAVA</span><span class="sk-val">85%</span></div><div class="sk-track"><div class="sk-fill green" data-w="85"></div></div></div>
+            <div class="sk"><div class="sk-head"><span>SQL / MYSQL</span><span class="sk-val">80%</span></div><div class="sk-track"><div class="sk-fill cyan" data-w="80"></div></div></div>
+            <div class="sk"><div class="sk-head"><span>DSA</span><span class="sk-val">75%</span></div><div class="sk-track"><div class="sk-fill green" data-w="75"></div></div></div>
+            <div class="sk"><div class="sk-head"><span>SPRING BOOT</span><span class="sk-val">70%</span></div><div class="sk-track"><div class="sk-fill cyan" data-w="70"></div></div></div>
+            <div class="sk"><div class="sk-head"><span>ANDROID STUDIO</span><span class="sk-val">72%</span></div><div class="sk-track"><div class="sk-fill pink" data-w="72"></div></div></div>
+            <div class="sk"><div class="sk-head"><span>FIREBASE</span><span class="sk-val">68%</span></div><div class="sk-track"><div class="sk-fill pink" data-w="68"></div></div></div>
+            <div class="sk"><div class="sk-head"><span>HTML / CSS / JS</span><span class="sk-val">75%</span></div><div class="sk-track"><div class="sk-fill amber" data-w="75"></div></div></div>
+            <div class="sk"><div class="sk-head"><span>PYTHON / OPENCV</span><span class="sk-val">65%</span></div><div class="sk-track"><div class="sk-fill amber" data-w="65"></div></div></div>
+          </div>
+          <div class="skill-tags-col" data-reveal="right">
+            <div class="stg">
+              <span class="stg-label">// BACKEND</span>
+              <div class="stg-tags"><span>Java</span><span>Spring Boot</span><span>REST API</span><span>MySQL</span><span>Oracle</span><span>Firebase</span></div>
+            </div>
+            <div class="stg">
+              <span class="stg-label">// MOBILE &amp; VISION</span>
+              <div class="stg-tags"><span>Android</span><span>OpenCV</span><span>LBPH</span><span>MobileFaceNet</span><span>Python</span></div>
+            </div>
+            <div class="stg">
+              <span class="stg-label">// DSA &amp; WEB</span>
+              <div class="stg-tags"><span>DSA</span><span>Collections</span><span>HTML</span><span>CSS</span><span>JavaScript</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ PROJECTS ═══════════════════════════════════ -->
+    <section class="sec" id="projects">
+      <div class="sec-inner">
+        <div class="sec-head" data-reveal="left">
+          <span class="sec-num">03</span>
+          <h2 class="sec-title">PROJECTS</h2>
+          <div class="proj-filters">
+            <button class="is-active" data-filter="all"    id="filter-all">ALL</button>
+            <button data-filter="main"   id="filter-main">MAIN</button>
+            <button data-filter="java"   id="filter-java">JAVA</button>
+            <button data-filter="vision" id="filter-vision">VISION</button>
+            <button data-filter="web"    id="filter-web">WEB</button>
+          </div>
+        </div>
+        <div class="proj-grid">
+
+          <article class="pc featured" data-project="main" data-reveal="bottom" id="proj-attendance">
+            <div class="pc-glow"></div>
+            <span class="pc-num">01</span>
+            <span class="pc-cat">// MAIN PROJECT</span>
+            <h3>Smart Attendance System</h3>
+            <p>Face-recognition attendance management with Java, Android, Firebase &amp; MobileFaceNet. Role-based login, Wi-Fi auth, session tracking, proxy prevention.</p>
+            <ul class="pc-tags"><li>JAVA</li><li>ANDROID</li><li>FIREBASE</li><li>MOBILEFACENET</li></ul>
+            <a class="pc-link" href="https://github.com/Vishva1605/Smart_Attendance_System_Using_FaceRecognition" target="_blank" rel="noreferrer" id="link-attendance">VIEW PROJECT ↗</a>
+          </article>
+
+          <article class="pc" data-project="java" data-reveal="bottom" id="proj-typer">
+            <div class="pc-glow"></div>
+            <span class="pc-num">02</span>
+            <span class="pc-cat">// JAVA UTILITY</span>
+            <h3>Java Typer / CodeTyper</h3>
+            <p>Automation tool typing Java into ACE editors using Java AWT Robot and JNativeHook.</p>
+            <ul class="pc-tags"><li>JAVA</li><li>AWT ROBOT</li><li>JNATIVEHOOK</li></ul>
+            <a class="pc-link" href="https://github.com/Vishva1605/Code_Typer" target="_blank" rel="noreferrer" id="link-typer">VIEW PROJECT ↗</a>
+          </article>
+
+          <article class="pc" data-project="vision" data-reveal="bottom" id="proj-opencv">
+            <div class="pc-glow"></div>
+            <span class="pc-num">03</span>
+            <span class="pc-cat">// COMPUTER VISION</span>
+            <h3>OpenCV Face Recognition</h3>
+            <p>Real-time face detection using Haar Cascade, LBPH recognizer, dataset training and webcam detection.</p>
+            <ul class="pc-tags"><li>PYTHON</li><li>OPENCV</li><li>LBPH</li></ul>
+            <a class="pc-link" href="https://github.com/Vishva1605/Face_Detection_Using_OpenCV" target="_blank" rel="noreferrer" id="link-opencv">VIEW PROJECT ↗</a>
+          </article>
+
+          <article class="pc" data-project="vision" data-reveal="bottom" id="proj-thirdeye">
+            <div class="pc-glow"></div>
+            <span class="pc-num">04</span>
+            <span class="pc-cat">// VISION PROJECT</span>
+            <h3>ThirdEye</h3>
+            <p>Vision-focused project exploring real-time object and face detection capabilities.</p>
+            <ul class="pc-tags"><li>PYTHON</li><li>OPENCV</li><li>VISION</li></ul>
+            <a class="pc-link" href="https://github.com/Vishva1605/ThirdEye" target="_blank" rel="noreferrer" id="link-thirdeye">VIEW PROJECT ↗</a>
+          </article>
+
+          <article class="pc" data-project="web" data-reveal="bottom" id="proj-web">
+            <div class="pc-glow"></div>
+            <span class="pc-num">05</span>
+            <span class="pc-cat">// WEB PROJECTS</span>
+            <h3>Calculator · Library · Login</h3>
+            <p>Frontend projects using HTML, CSS, JavaScript — responsive UI, form logic, interactive behaviour.</p>
+            <ul class="pc-tags"><li>HTML</li><li>CSS</li><li>JAVASCRIPT</li></ul>
+            <div class="pc-multi">
+              <a href="https://Vishva1605.github.io/Web-Projects/Calculator/" target="_blank" rel="noreferrer" id="link-calc">CALC ↗</a>
+              <a href="https://Vishva1605.github.io/Web-Projects/Library-Management-System/" target="_blank" rel="noreferrer" id="link-library">LIB ↗</a>
+              <a href="https://Vishva1605.github.io/Web-Projects/Login-Page/" target="_blank" rel="noreferrer" id="link-login">LOGIN ↗</a>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ EXPERIENCE ═════════════════════════════════ -->
+    <section class="sec" id="experience">
+      <div class="sec-inner">
+        <div class="sec-head" data-reveal="left">
+          <span class="sec-num">04</span>
+          <h2 class="sec-title">JOURNEY</h2>
+        </div>
+        <div class="timeline">
+          <div class="tl-line" aria-hidden="true"></div>
+
+          <article class="tl-item" data-reveal="left" id="exp-ulektz">
+            <div class="tl-dot"></div>
+            <span class="tl-year">2025</span>
+            <div class="tl-body">
+              <span class="tl-badge work">INTERNSHIP</span>
+              <h3>Full Stack Java Developer Intern</h3>
+              <p class="tl-org">uLektz Learning Solutions</p>
+              <p>Java full-stack internship covering application workflows, debugging, and database integration.</p>
+              <a href="certificate-viewer.html?title=uLektz%20Java%20Full%20Stack%20Internship%20Certificate&file=certification/uLektz%20Java%20Full%20Stack%20Internship%20Certificate.png&type=image" target="_blank" class="tl-cert" id="jcert-ulektz">VIEW CERTIFICATE ↗</a>
+            </div>
+          </article>
+
+          <article class="tl-item" data-reveal="left" id="exp-techno">
+            <div class="tl-dot"></div>
+            <span class="tl-year">2024</span>
+            <div class="tl-body">
+              <span class="tl-badge work">INTERNSHIP</span>
+              <h3>Web Development Online Intern</h3>
+              <p class="tl-org">TechnoHacks EduTech</p>
+              <p>Responsive UI and interactive components using HTML, CSS, JavaScript.</p>
+              <a href="certificate-viewer.html?title=TechnoHacks%20Web%20Development%20Internship%20Certificate&file=certification/TechnoHacks%20Web%20Development%20Internship%20Certificate.pdf&type=pdf" target="_blank" class="tl-cert" id="jcert-techno">VIEW CERTIFICATE ↗</a>
+            </div>
+          </article>
+
+          <article class="tl-item" data-reveal="left" id="exp-be">
+            <div class="tl-dot"></div>
+            <span class="tl-year">2022–26</span>
+            <div class="tl-body">
+              <span class="tl-badge edu">EDUCATION</span>
+              <h3>B.E. — Computer Science &amp; Engineering</h3>
+              <p class="tl-org">S.A. Engineering College, Chennai</p>
+              <p>CGPA: 8.2 · Data Structures, DBMS, OS, Networks, OOP.</p>
+            </div>
+          </article>
+
+          <article class="tl-item" data-reveal="left" id="exp-hsc">
+            <div class="tl-dot"></div>
+            <span class="tl-year">2021–22</span>
+            <div class="tl-body">
+              <span class="tl-badge edu">EDUCATION</span>
+              <h3>Higher Secondary Education</h3>
+              <p class="tl-org">Sri Arunachala Matric Hr. Sec School, Cuddalore</p>
+              <p>Score: 82% · Mathematics, Physics, Computer Science.</p>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ CERTIFICATES ═══════════════════════════════ -->
+    <section class="sec" id="certificates">
+      <div class="sec-inner">
+        <div class="sec-head" data-reveal="left">
+          <span class="sec-num">05</span>
+          <h2 class="sec-title">CREDENTIALS</h2>
+        </div>
+        <div class="certs-grid">
+          <a class="cc" href="certificate-viewer.html?title=Programming%20in%20Java%20-%20NPTEL&file=certification/Programming%20In%20Java.pdf&type=pdf" target="_blank" data-reveal="bottom" id="cert-nptel-java">
+            <span class="cc-idx">01</span>
+            <div class="cc-info"><span class="cc-issuer">NPTEL</span><strong>Programming in Java</strong></div>
+            <span class="cc-go">VIEW ↗</span>
+            <div class="cc-glow"></div>
+          </a>
+          <a class="cc" href="certificate-viewer.html?title=Cloud%20Computing%20-%20NPTEL&file=certification/Cloud%20Computing.pdf&type=pdf" target="_blank" data-reveal="bottom" id="cert-nptel-cloud">
+            <span class="cc-idx">02</span>
+            <div class="cc-info"><span class="cc-issuer">NPTEL</span><strong>Cloud Computing</strong></div>
+            <span class="cc-go">VIEW ↗</span>
+            <div class="cc-glow"></div>
+          </a>
+          <a class="cc" href="certificate-viewer.html?title=Pearson%20MePro%20Level%2010%20Expert&file=certification/Pearson%20MePro%20Level%2010%20Expert%20Certificate.png&type=image" target="_blank" data-reveal="bottom" id="cert-pearson">
+            <span class="cc-idx">03</span>
+            <div class="cc-info"><span class="cc-issuer">PEARSON</span><strong>MePro Level 10 Expert</strong></div>
+            <span class="cc-go">VIEW ↗</span>
+            <div class="cc-glow"></div>
+          </a>
+          <a class="cc" href="certificate-viewer.html?title=GeeksforGeeks%20Java%20Course&file=certification/GeeksforGeeks%20Java%20Course%20Certificate.png&type=image" target="_blank" data-reveal="bottom" id="cert-gfg">
+            <span class="cc-idx">04</span>
+            <div class="cc-info"><span class="cc-issuer">GEEKSFORGEEKS</span><strong>Java Online Course</strong></div>
+            <span class="cc-go">VIEW ↗</span>
+            <div class="cc-glow"></div>
+          </a>
+          <a class="cc" href="certificate-viewer.html?title=TechnoHacks%20Web%20Development%20Internship&file=certification/TechnoHacks%20Web%20Development%20Internship%20Certificate.pdf&type=pdf" target="_blank" data-reveal="bottom" id="cert-techno">
+            <span class="cc-idx">05</span>
+            <div class="cc-info"><span class="cc-issuer">TECHNOHACKS</span><strong>Web Development Internship</strong></div>
+            <span class="cc-go">VIEW ↗</span>
+            <div class="cc-glow"></div>
+          </a>
+          <div class="cc cc-award" data-reveal="bottom" id="cert-ieee">
+            <span class="cc-idx">🏆</span>
+            <div class="cc-info"><span class="cc-issuer">IEEE</span><strong>Hackathon — 2nd Prize</strong></div>
+            <span class="cc-go">ACHIEVEMENT</span>
+            <div class="cc-glow"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ CONTACT ════════════════════════════════════ -->
+    <section class="sec contact-sec" id="contact">
+      <div class="sec-inner">
+        <div class="sec-head" data-reveal="left">
+          <span class="sec-num">06</span>
+          <h2 class="sec-title">CONTACT</h2>
+        </div>
+        <div class="contact-body">
+          <div class="contact-big-text" data-reveal="bottom">
+            <p class="cbt-line">READY FOR</p>
+            <p class="cbt-line cbt-neon">JAVA ROLES.</p>
+            <p class="cbt-sub">Backend · Full Stack · Software Developer · Fresher Positions</p>
+            <a class="btn-neon" href="https://mail.google.com/mail/?view=cm&fs=1&to=vishvasrinivas123@gmail.com" target="_blank" rel="noreferrer" id="contact-cta-btn">
+              <span class="btn-neon-bg"></span><span>SEND A MESSAGE</span>
+            </a>
+          </div>
+          <div class="contact-links-col" data-reveal="right">
+            <a class="c-link" href="https://mail.google.com/mail/?view=cm&fs=1&to=vishvasrinivas123@gmail.com" target="_blank" rel="noreferrer" id="clink-email">
+              <span class="c-n">01</span><div class="c-d"><small>EMAIL</small><strong>vishvasrinivas123@gmail.com</strong></div><span class="c-arr">→</span>
+            </a>
+            <a class="c-link" href="tel:+919384998871" id="clink-phone">
+              <span class="c-n">02</span><div class="c-d"><small>PHONE</small><strong>+91 9384998871</strong></div><span class="c-arr">→</span>
+            </a>
+            <a class="c-link" href="https://www.linkedin.com/in/vishva-k-s-900270274/" target="_blank" rel="noreferrer" id="clink-linkedin">
+              <span class="c-n">03</span><div class="c-d"><small>LINKEDIN</small><strong>vishva-k-s-900270274</strong></div><span class="c-arr">→</span>
+            </a>
+            <a class="c-link" href="https://github.com/Vishva1605" target="_blank" rel="noreferrer" id="clink-github">
+              <span class="c-n">04</span><div class="c-d"><small>GITHUB</small><strong>Vishva1605</strong></div><span class="c-arr">→</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>© 2026 VISHVA K S</span>
+    <span>JAVA DEVELOPER PORTFOLIO</span>
+    <a href="#home" class="footer-top">BACK TO TOP ↑</a>
+  </footer>
+</body>
+</html>
